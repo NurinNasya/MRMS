@@ -1,18 +1,18 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MeetingRoom extends Model
+class Booking extends Model
 {
     use HasFactory;
-    protected $fillable = [
-        'room_name',
-        'capacity',
-        'status',
-        'room_code',
 
+    protected $fillable = [
+        'user_id',
+        'room_id',
+        'date',
+        'time',
+        'status',
     ];
 }
