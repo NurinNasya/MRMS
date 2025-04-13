@@ -1,144 +1,68 @@
-<!DOCTYPE html>
-<html>
+@extends('layout.user')
 
-<head>
-    <title>Status Approval (User Page)</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .success {
-            color: green;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .booking-container {
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 20px;
-            margin-bottom: 20px;
-            background-color: #f9f9f9;
-        }
-
-        .booking-field {
-            margin-bottom: 12px;
-            display: flex;
-        }
-
-        .booking-label {
-            font-weight: bold;
-            width: 120px;
-        }
-
-        .status-approved {
-            color: green;
-            font-weight: bold;
-        }
-
-        .status-rejected {
-            color: red;
-            font-weight: bold;
-        }
-
-        .status-cancel {
-            color: orange;
-            font-weight: bold;
-        }
-
-        .status-pending {
-            color: blue;
-            font-weight: bold;
-        }
-
-        /* For smaller screens */
-        @media (max-width: 600px) {
-            .booking-field {
-                flex-direction: column;
-            }
-            
-            .booking-label {
-                width: 100%;
-                margin-bottom: 3px;
-            }
-        }
-    </style>
-</head>
-
-<body>
-
-    <h2>User Booking Status Page</h2>
+@section('content')
+<div class="max-w-3xl mx-auto p-6 bg-white rounded shadow">
+    <h2 class="text-2xl font-bold text-center text-blue-700 mb-6">User Booking Status Page</h2>
 
     @if (session('success'))
-        <p class="success">{{ session('success') }}</p>
+        <div class="mb-4 text-green-600 font-semibold text-center">
+            {{ session('success') }}
+        </div>
     @endif
 
-    @foreach ($bookings as $booking)
-        <div class="booking-container">
-            <div class="booking-field">
-                <div class="booking-label">User_ID:</div>
-                <div>{{ $booking->user_id }}</div>
+    {{--@foreach ($bookings as $booking)--}}
+        <div class="mb-6 p-4 border rounded bg-gray-50">
+            <div class="mb-2 flex">
+                <span class="font-semibold w-40">User ID:</span>
+                {{--<span>{{ $booking->user_id }}</span>--}}
             </div>
-            
-            <div class="booking-field">
-                <div class="booking-label">Room_ID:</div>
-                <div>{{ $booking->room_id }}</div>
+
+            <div class="mb-2 flex">
+                <span class="font-semibold w-40">Room ID:</span>
+                {{--<span>{{ $booking->room_id }}</span>--}}
             </div>
-            
-            <div class="booking-field">
-                <div class="booking-label">Start_time:</div>
-                <div>{{ $booking->start_time }}</div>
+
+            <div class="mb-2 flex">
+                <span class="font-semibold w-40">Start Time:</span>
+              {{-- -  <span>{{ $booking->start_time }}</span>--}} 
             </div>
-            
-            <div class="booking-field">
-                <div class="booking-label">End_time:</div>
-                <div>{{ $booking->end_time }}</div>
+
+            <div class="mb-2 flex">
+                <span class="font-semibold w-40">End Time:</span>
+               {{--<span>{{ $booking->end_time }}</span>--}} 
             </div>
-            
-            <div class="booking-field">
-                <div class="booking-label">Participant:</div>
-                <div>{{ $booking->participant }}</div>
+
+            <div class="mb-2 flex">
+                <span class="font-semibold w-40">Participants:</span>
+               {{--<span>{{ $booking->participant }}</span>--}}
             </div>
-            
-            <div class="booking-field">
-                <div class="booking-label">Meeting Agenda:</div>
-                <div>{{ $booking->agenda }}</div>
+
+            <div class="mb-2 flex">
+                <span class="font-semibold w-40">Meeting Agenda:</span>
+                {{--<span>{{ $booking->agenda }}</span>--}}
             </div>
-            
-            <div class="booking-field">
-                <div class="booking-label">Status:</div>
-                <div class="
-                    @if($booking->status == 'Approved') status-approved
-                    @elseif($booking->status == 'Rejected') status-rejected
-                    @elseif($booking->status == 'Cancel') status-cancel
-                    @else status-pending
+
+            <div class="flex">
+                <span class="font-semibold w-40">Status:</span>
+                <span class="
+                    {{-- @if($booking->status == 'Approved') text-green-600 font-bold--}}
+                    {{--@elseif($booking->status == 'Rejected') text-red-600 font-bold--}}
+                   {{--   @elseif($booking->status == 'Cancel') text-orange-500 font-bold--}}
+                    @else text-blue-600 font-bold
                     @endif
                 ">
-                    {{ $booking->status ?? 'Pending' }}
-                </div>
+                    {{--{{ $booking->status ?? 'Pending' }}--}}
+                </span>
             </div>
         </div>
     @endforeach
 
-    <!-- Fixed the route error by using url() instead of route() -->
-    <div style="text-align: center; margin-top: 20px;">
-        <a href="{{ url('/status-approval') }}" style="text-decoration: none;">
-            <button style="padding: 10px 15px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">
+    <div class="text-center mt-6">
+        <a href="{{ url('/status-approval') }}">
+            <button class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded">
                 Back to Bookings List
             </button>
         </a>
     </div>
-
-</body>
-
-</html>
+</div>
+@endsection
