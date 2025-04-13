@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MRMS ADMIN</title>
 
-    <!-- Vite CSS and JS -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <!-- Vite CSS and JS -->
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
 
 </head>
 <body class="font-sans bg-gray-100">
