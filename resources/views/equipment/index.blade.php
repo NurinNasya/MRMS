@@ -1,83 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Equipment List</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100 font-sans">
+@extends('layout.admin')
 
-    <div class="container mx-auto p-4">
-        <!-- Title at top-left -->
-        <h1 class="text-3xl font-bold mb-2">🛠️ Equipment List</h1>
+@section('content')
+<div class="p-6">
+    <h2 class="text-2xl font-semibold text-blue-700 mb-4">Choose a Room</h2>
 
-        <!-- Search Bar -->
-        <form action="{{ route('equipment.index') }}" method="GET" class="flex max-w-md mb-4">
-            <input type="text" name="search" placeholder="Search..."
-                value="{{ request('search') }}"
-                class="w-full border border-gray-300 px-3 py-2 rounded-l focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <button type="submit"
-                    class="bg-blue-600 text-white px-4 py-2 rounded-r hover:bg-blue-700">
-                Search
-            </button>
-        </form>
-
-        <!-- Button on next line, right-aligned -->
-        <div class="flex justify-end mb-4">
-            <a href="{{ route('equipment.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
-                Add Equipment
-            </a>
-        </div>
-
-        <table class="w-full text-left border-collapse shadow-sm">
+    <div class="overflow-x-auto rounded-lg shadow">
+        <table class="min-w-full bg-white border-collapse">
             <thead>
-                <tr class="bg-gray-100 text-gray-700">
-                    <th class="p-2">NO</th>
-                    <th class="p-2">EQUIPMENT ID</th>
-                    <th class="p-2">EQUIPMENT NAME</th>
-                    <th class="p-2">QUANTITY</th>
-                    <th class="p-2">ROOM</th>
-                    <th class="p-2">STATUS</th>
-                    <th class="p-2">ACTIONS</th>
+                <tr class="bg-blue-100 text-gray-700 text-left text-sm">
+                    <!-- Header cells with top, bottom, and side borders -->
+                    <th class="py-3 px-4 border-t border-b border-l border-gray-300 first:rounded-tl-lg">ID</th>
+                    <th class="py-3 px-4 border-t border-b border-gray-300">Room Name</th>
+                    <th class="py-3 px-4 border-t border-b border-gray-300">Room Code</th>
+                    <th class="py-3 px-4 border-t border-b border-gray-300">Capacity</th>
+                    <th class="py-3 px-4 border-t border-b border-r border-gray-300 last:rounded-tr-lg text-center">Action</th>
                 </tr>
             </thead>
-            <tbody>
-                @foreach($equipments as $index => $equipment)
-                    @php
-                        $status = $equipment->status;
-                        $bgColor = 'bg-red-100';
-                        $textColor = 'text-red-800';
-
-                        if ($status == 'Available') {
-                            $bgColor = 'bg-green-100';
-                            $textColor = 'text-green-800';
-                        } elseif ($status == 'Under Maintenance') {
-                            $bgColor = 'bg-yellow-100';
-                            $textColor = 'text-yellow-800';
-                        }
-                    @endphp
-                    <tr class="border-b bg-white">
-                        <td class="p-2">{{ $loop->iteration }}</td>
-                        <td class="p-2">{{ $equipment->equipment_id }}</td>
-                        <td class="p-2">{{ $equipment->equipment_name }}</td>
-                        <td class="p-2">{{ $equipment->quantity }}</td>
-                        <td class="p-2">{{ $equipment->room }}</td>
-                        <td class="p-2">
-                            <span class="px-2 py-1 rounded-full text-sm {{ $bgColor }} {{ $textColor }}">
-                                {{ $equipment->status }}
-                            </span>
-                        </td>
-                        <td class="p-2">
-                            <!-- Edit Button -->
-                            <a href="{{ route('equipment.edit', $equipment->id) }}" class="bg-yellow-400 px-3 py-1 rounded text-white">Edit</a>
-
-                            <!-- Delete Button -->
-                            <form action="{{ route('equipment.destroy', $equipment->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Are you sure you want to delete this item?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="bg-red-500 px-3 py-1 rounded text-white">Delete</button>
-                            </form>
+            <tbody class="text-sm text-gray-700">
+                @foreach ($equipments as $room)
+                    <tr class="hover:bg-gray-50">
+                        <!-- Body cells with bottom and side borders -->
+                        <td class="py-3 px-4 border-b border-l border-gray-300">{{ $room->id }}</td>
+                        <td class="py-3 px-4 border-b border-gray-300">{{ $room->room_name }}</td>
+                        <td class="py-3 px-4 border-b border-gray-300">{{ $room->room_code }}</td>
+                        <td class="py-3 px-4 border-b border-gray-300">{{ $room->capacity }}</td>
+                        <td class="py-3 px-4 border-b border-r border-gray-300 text-center">
+                            <button class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm">
+                                Add Equip
+                            </button>
                         </td>
                     </tr>
                 @endforeach
@@ -85,5 +35,82 @@
         </table>
     </div>
 
-</body>
-</html>
+    <!-- Pagination -->
+    @if ($equipments->hasPages())
+    <div class="flex items-center justify-between mt-4">
+        <div class="text-sm text-gray-700">
+            Showing {{ $equipments->firstItem() }} to {{ $equipments->lastItem() }} of {{ $equipments->total() }} results
+        </div>
+        <div class="flex space-x-2">
+            <!-- Previous Page Link -->
+            @if ($equipments->onFirstPage())
+                <span class="px-3 py-1 bg-gray-200 text-gray-500 rounded cursor-not-allowed">Previous</span>
+            @else
+                <a href="{{ $equipments->previousPageUrl() }}" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Previous</a>
+            @endif
+
+            <!-- Pagination Elements -->
+            @foreach ($equipments->getUrlRange(1, $equipments->lastPage()) as $page => $url)
+                @if ($page == $equipments->currentPage())
+                    <span class="px-3 py-1 bg-blue-600 text-white rounded">{{ $page }}</span>
+                @else
+                    <a href="{{ $url }}" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">{{ $page }}</a>
+                @endif
+            @endforeach
+
+            <!-- Next Page Link -->
+            @if ($equipments->hasMorePages())
+                <a href="{{ $equipments->nextPageUrl() }}" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Next</a>
+            @else
+                <span class="px-3 py-1 bg-gray-200 text-gray-500 rounded cursor-not-allowed">Next</span>
+            @endif
+        </div>
+    </div>
+    @endif
+
+    <!-- Separator line -->
+    <hr class="my-12 border-t-2 border-gray-600">
+
+    <!-- Equipment List Section -->
+    <div class="mt-12">
+        <h2 class="text-2xl font-semibold text-blue-700 mb-4">Equipment List</h2>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow">
+                <thead class="bg-blue-100 text-gray-700 text-left text-sm">
+                    <tr>
+                        <th class="py-3 px-4 border-b">ID</th>
+                        <th class="py-3 px-4 border-b">Room Name</th>
+                        <th class="py-3 px-4 border-b">Room Code</th>
+                        <th class="py-3 px-4 border-b">Capacity</th>
+                        <th class="py-3 px-4 border-b">Start Time</th>
+                        <th class="py-3 px-4 border-b">End Time</th>
+                        <th class="py-3 px-4 border-b text-center">Equip List</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm text-gray-700">
+                    @foreach ($equipments as $room)
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-3 px-4 border-b">{{ $room->id }}</td>
+                            <td class="py-3 px-4 border-b">{{ $room->room_name }}</td>
+                            <td class="py-3 px-4 border-b">{{ $room->room_code }}</td>
+                            <td class="py-3 px-4 border-b">{{ $room->capacity }}</td>
+                            <td class="py-3 px-4 border-b">{{ $room->start_time }}</td>
+                            <td class="py-3 px-4 border-b">{{ $room->end_time }}</td>
+                            <td class="py-3 px-4 border-b">
+                                <div class="flex flex-col items-center space-y-1">
+                                    @foreach($room->equipment as $equipment)
+                                        <span class="w-full bg-gray-100 rounded px-2 py-1 text-xs font-semibold text-gray-700 text-center">
+                                            {{ $equipment->equipment_name }} ({{ $equipment->quantity }})
+                                        </span>
+                                    @endforeach
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@endsection

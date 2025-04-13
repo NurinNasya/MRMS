@@ -4,57 +4,69 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Equipment;
+use App\Models\MeetingRoom;
 
 class EquipmentController extends Controller
 {
-    // Show all equipment with optional search and pagination
+    // Show all equipment grouped by room with optional search and pagination
     public function index(Request $request)
     {
-        $query = Equipment::query();
+        $roomsQuery = MeetingRoom::with('equipment'); // Eager load equipment relation
 
         if ($request->has('search') && $request->search != '') {
             $searchTerm = $request->search;
-            $query->where(function($q) use ($searchTerm) {
-                $q->where('equipment_id', 'LIKE', "%{$searchTerm}%")
-                  ->orWhere('equipment_name', 'LIKE', "%{$searchTerm}%")
-                  ->orWhere('room', 'LIKE', "%{$searchTerm}%")
-                  ->orWhere('status', 'LIKE', "%{$searchTerm}%");
+            $roomsQuery->where(function($q) use ($searchTerm) {
+                $q->where('name', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('code', 'LIKE', "%{$searchTerm}%")
+                  ->orWhere('capacity', 'LIKE', "%{$searchTerm}%")
+                  ->orWhereHas('equipment', function ($eq) use ($searchTerm) {
+                      $eq->where('equipment_name', 'LIKE', "%{$searchTerm}%");
+                  });
             });
         }
 
-        $equipments = $query->orderBy('created_at', 'desc')->paginate(10);
+        $equipments = $roomsQuery->orderBy('created_at', 'desc')->paginate(10);
 
         return view('equipment.index', compact('equipments'));
     }
 
     // Show the create form
-    public function create()
+    public function create($room = null)
     {
-        return view('equipment.create');
+        $rooms = MeetingRoom::all();
+        $selectedRoom = $room ? MeetingRoom::find($room) : null;
+
+        return view('equipment.create', [
+            'rooms' => $rooms,
+            'selectedRoom' => $selectedRoom
+        ]);
     }
 
     // Store new equipment
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'equipment_id' => 'required|string|max:255|unique:equipment,equipment_id',
             'equipment_name' => 'required|string|max:255',
             'quantity' => 'required|integer|min:1',
-            'room' => 'required|string|max:255',
-            'status' => 'required|string|in:Available,Under Maintenance,In Use',
+            'room_id' => 'required|exists:rooms,id',
+            'status' => 'required|string|in:Available,In Use,Under Maintenance',
         ]);
+
+        $room = MeetingRoom::find($validated['room_id']);
+        $validated['room'] = $room->name;
 
         Equipment::create($validated);
 
-        return redirect()->route('equipment.index')
-            ->with('success', 'Equipment added successfully!');
+        return redirect()->route('equipment.index')->with('success', 'Equipment added successfully!');
     }
 
     // Show the edit form
     public function edit($id)
     {
         $equipment = Equipment::findOrFail($id);
-        return view('equipment.edit', compact('equipment'));
+        $rooms = MeetingRoom::all();
+
+        return view('equipment.edit', compact('equipment', 'rooms'));
     }
 
     // Update existing equipment
@@ -63,17 +75,18 @@ class EquipmentController extends Controller
         $equipment = Equipment::findOrFail($id);
 
         $validated = $request->validate([
-            'equipment_id' => 'required|string|max:255|unique:equipment,equipment_id,'.$id,
             'equipment_name' => 'required|string|max:255',
             'quantity' => 'required|integer|min:1',
-            'room' => 'required|string|max:255',
+            'room_id' => 'required|exists:rooms,id',
             'status' => 'required|string|in:Available,Under Maintenance,In Use',
         ]);
 
+        $room = MeetingRoom::find($validated['room_id']);
+        $validated['room'] = $room->name;
+
         $equipment->update($validated);
 
-        return redirect()->route('equipment.index')
-            ->with('success', 'Equipment updated successfully!');
+        return redirect()->route('equipment.index')->with('success', 'Equipment updated successfully!');
     }
 
     // Delete equipment
@@ -82,7 +95,6 @@ class EquipmentController extends Controller
         $equipment = Equipment::findOrFail($id);
         $equipment->delete();
 
-        return redirect()->route('equipment.index')
-            ->with('success', 'Equipment deleted successfully!');
+        return redirect()->route('equipment.index')->with('success', 'Equipment deleted successfully!');
     }
 }

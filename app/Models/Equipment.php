@@ -9,13 +9,19 @@ class Equipment extends Model
 {
     use HasFactory;
 
-    protected $table = 'equipment';  // Specify the table name if it's not plural of the model name
-    // Equipment.php (model)
     protected $fillable = [
-        'equipment_id',
-        'equipment_name',
-        'quantity',
-        'room',
-        'status',
-    ];    
+        'name',
+        'meeting_room_id',
+        'code',
+        'capacity',
+        'start_time',
+        'end_time',
+    ];
+
+    // 🔽 Add this method below to link equipment to the room
+       // Define the relationship to the MeetingRoom
+       public function meetingRoom()
+       {
+           return $this->belongsTo(MeetingRoom::class, 'meeting_room_id'); // Foreign key in Equipment model for MeetingRoom
+       }
 }

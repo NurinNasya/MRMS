@@ -37,7 +37,8 @@ Route::middleware(['auth'])->group(function () {
 
     // EquipmentController routes (hers)
     Route::get('/equipment', [EquipmentController::class, 'index'])->name('equipment.index');
-    Route::get('/equipment/create', [EquipmentController::class, 'create'])->name('equipment.create');
+    // Make the room parameter optional
+    Route::get('/equipment/create/{room?}', [EquipmentController::class, 'create'])->name('equipment.create');
     Route::post('/equipment', [EquipmentController::class, 'store'])->name('equipment.store');
     Route::get('/equipment/{id}/edit', [EquipmentController::class, 'edit'])->name('equipment.edit');
     Route::put('/equipment/{id}', [EquipmentController::class, 'update'])->name('equipment.update');

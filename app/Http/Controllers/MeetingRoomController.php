@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\MeetingRoom;
+use App\Models\Equipment;
 
 
 class MeetingRoomController extends Controller

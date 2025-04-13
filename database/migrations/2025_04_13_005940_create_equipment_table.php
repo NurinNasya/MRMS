@@ -9,17 +9,17 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('equipment', function (Blueprint $table) {
             $table->id();
-            $table->string('device_id')->unique();
-            $table->string('device_name');
+            // Add foreign key to the meeting_rooms table
+            $table->foreignId('meeting_room_id')  // Foreign key for meeting_rooms
+                ->constrained('meeting_rooms')  // Reference meeting_rooms table
+                ->onDelete('cascade');  // Optional: Set cascading delete if the meeting room is deleted
+            $table->string('equipment_name');
             $table->integer('quantity');
-            $table->string('room');
-            $table->enum('status', ['Available', 'Maintenance', 'In Use']);
-            $table->date('last_maintenance');
-            $table->date('next_maintenance');
+            $table->enum('status', ['Available', 'Maintenance', 'In Use'])->default('Available');
             $table->timestamps();
         });
     }
