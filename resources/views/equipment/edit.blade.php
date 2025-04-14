@@ -21,16 +21,7 @@
             @csrf
             @method('PUT') <!-- Specify PUT method for updating -->
 
-            <!-- Device ID -->
-            <div class="mb-4">
-                <label for="equipment_id" class="block font-medium">Equipment ID</label>
-                <input type="text" name="equipment_id" id="equipment_id" 
-                       class="w-full border border-gray-300 p-2 rounded mt-1"
-                       value="{{ old('equipment_id', $equipment->equipment_id) }}" required>
-                @error('equipment_id') <small class="text-red-500">{{ $message }}</small> @enderror
-            </div>
-
-            <!-- Device Name -->
+            <!-- Equipment Name -->
             <div class="mb-4">
                 <label for="equipment_name" class="block font-medium">Equipment Name</label>
                 <input type="text" name="equipment_name" id="equipment_name"
@@ -48,28 +39,30 @@
                 @error('quantity') <small class="text-red-500">{{ $message }}</small> @enderror
             </div>
 
-            <!-- Room -->
+            <!-- Room Selection -->
             <div class="mb-4">
-                <label for="room" class="block font-medium">Room</label>
-                <input type="text" name="room" id="room" 
-                       class="w-full border border-gray-300 p-2 rounded mt-1"
-                       value="{{ old('room', $equipment->room) }}" required>
-                @error('room') <small class="text-red-500">{{ $message }}</small> @enderror
+                <label for="meeting_room_id" class="block font-medium">Room</label>
+                <select name="meeting_room_id" id="room_id" class="w-full border border-gray-300 p-2 rounded mt-1" required>
+                    @foreach ($rooms as $room)
+                        <option value="{{ $room->id }}" {{ old('meeting_room_id', $equipment->meeting_room_id) == $room->id ? 'selected' : '' }}>
+                            {{ $room->room_name }} <!-- This should display room_name, but the value should be room->id -->
+                        </option>
+                    @endforeach
+                </select>
+                @error('meeting_room_id') <small class="text-red-500">{{ $message }}</small> @enderror
             </div>
 
-            <!-- Status Field with Select Dropdown -->
+            <!-- Status Field -->
             <div class="mb-6">
                 <label for="status" class="block font-medium">Status</label>
-                <select name="status" id="status"
-                        class="w-full border border-gray-300 p-2 rounded mt-1"
-                        required>
+                <select name="status" id="status" class="w-full border border-gray-300 p-2 rounded mt-1" required>
                     <option value="Available" {{ old('status', $equipment->status) == 'Available' ? 'selected' : '' }}>Available</option>
                     <option value="In Use" {{ old('status', $equipment->status) == 'In Use' ? 'selected' : '' }}>In Use</option>
                     <option value="Under Maintenance" {{ old('status', $equipment->status) == 'Under Maintenance' ? 'selected' : '' }}>Under Maintenance</option>
                 </select>
                 @error('status') <small class="text-red-500">{{ $message }}</small> @enderror
             </div>
-            
+
             <!-- Submit & Back Buttons -->
             <div class="flex justify-between">
                 <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-md">

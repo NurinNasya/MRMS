@@ -35,12 +35,21 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/meetingroom/view/{id}', [MeetingRoomController::class, 'view'])->name('meetingroom.view');
     Route::delete('/meetingroom/delete/{id}', [MeetingRoomController::class, 'destroy'])->name('meetingroom.destroy');
 
-    // EquipmentController routes (hers)
-    Route::get('/equipment', [EquipmentController::class, 'index'])->name('equipment.index');
-    // Make the room parameter optional
-    Route::get('/equipment/create/{room?}', [EquipmentController::class, 'create'])->name('equipment.create');
-    Route::post('/equipment', [EquipmentController::class, 'store'])->name('equipment.store');
-    Route::get('/equipment/{id}/edit', [EquipmentController::class, 'edit'])->name('equipment.edit');
-    Route::put('/equipment/{id}', [EquipmentController::class, 'update'])->name('equipment.update');
-    Route::delete('/equipment/{id}', [EquipmentController::class, 'destroy'])->name('equipment.destroy');
+    // Equipment routes
+    Route::prefix('equipment')->group(function () {
+        Route::get('/', [EquipmentController::class, 'index'])->name('equipment.index'); // Index route
+        Route::get('/create', [EquipmentController::class, 'create'])->name('equipment.create'); // General create route
+        Route::get('/create/room/{meetingRoom}', [EquipmentController::class, 'createWithRoom'])->name('equipment.create.with-room'); // Create route with room binding
+        Route::post('/', [EquipmentController::class, 'store'])->name('equipment.store'); // Store route (for adding equipment)
+        
+        // Edit route for individual equipment
+        Route::get('/{equipment}/edit', [EquipmentController::class, 'edit'])->name('equipment.edit');
+        
+        // Update route for the equipment (ensure PUT method)
+        Route::put('/{equipment}', [EquipmentController::class, 'update'])->name('equipment.update');
+        
+        // Delete route for equipment
+        Route::delete('/{equipment}', [EquipmentController::class, 'destroy'])->name('equipment.destroy');
+    });
+    
 });

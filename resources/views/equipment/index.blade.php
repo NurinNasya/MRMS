@@ -25,9 +25,11 @@
                         <td class="py-3 px-4 border-b border-gray-300">{{ $room->room_code }}</td>
                         <td class="py-3 px-4 border-b border-gray-300">{{ $room->capacity }}</td>
                         <td class="py-3 px-4 border-b border-r border-gray-300 text-center">
+                        <a href="{{ route('equipment.create', $room->id) }}" >
                             <button class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm">
                                 Add Equip
                             </button>
+                        </a>
                         </td>
                     </tr>
                 @endforeach
@@ -71,46 +73,68 @@
     <!-- Separator line -->
     <hr class="my-12 border-t-2 border-gray-600">
 
-    <!-- Equipment List Section -->
-    <div class="mt-12">
-        <h2 class="text-2xl font-semibold text-blue-700 mb-4">Equipment List</h2>
+<!-- Equipment List Section -->
+<div class="mt-12">
+    <h2 class="text-2xl font-semibold text-blue-700 mb-4">Equipment List</h2>
 
-        <div class="overflow-x-auto">
-            <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow">
-                <thead class="bg-blue-100 text-gray-700 text-left text-sm">
-                    <tr>
-                        <th class="py-3 px-4 border-b">ID</th>
-                        <th class="py-3 px-4 border-b">Room Name</th>
-                        <th class="py-3 px-4 border-b">Room Code</th>
-                        <th class="py-3 px-4 border-b">Capacity</th>
-                        <th class="py-3 px-4 border-b">Start Time</th>
-                        <th class="py-3 px-4 border-b">End Time</th>
-                        <th class="py-3 px-4 border-b text-center">Equip List</th>
-                    </tr>
-                </thead>
-                <tbody class="text-sm text-gray-700">
-                    @foreach ($equipments as $room)
-                        <tr class="hover:bg-gray-50">
-                            <td class="py-3 px-4 border-b">{{ $room->id }}</td>
-                            <td class="py-3 px-4 border-b">{{ $room->room_name }}</td>
-                            <td class="py-3 px-4 border-b">{{ $room->room_code }}</td>
-                            <td class="py-3 px-4 border-b">{{ $room->capacity }}</td>
-                            <td class="py-3 px-4 border-b">{{ $room->start_time }}</td>
-                            <td class="py-3 px-4 border-b">{{ $room->end_time }}</td>
-                            <td class="py-3 px-4 border-b">
-                                <div class="flex flex-col items-center space-y-1">
-                                    @foreach($room->equipment as $equipment)
-                                        <span class="w-full bg-gray-100 rounded px-2 py-1 text-xs font-semibold text-gray-700 text-center">
-                                            {{ $equipment->equipment_name }} ({{ $equipment->quantity }})
-                                        </span>
-                                    @endforeach
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+    <!-- Success Message -->
+    @if(session('success'))
+        <div class="mb-4 p-4 bg-green-100 text-green-700 rounded shadow">
+            {{ session('success') }}
         </div>
+    @endif
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow">
+            <thead class="bg-blue-100 text-gray-700 text-left text-sm">
+                <tr>
+                    <th class="py-3 px-4 border-b">ID</th>
+                    <th class="py-3 px-4 border-b">Room Name</th>
+                    <th class="py-3 px-4 border-b">Room Code</th>
+                    <th class="py-3 px-4 border-b">Equip List</th>
+                    <th class="py-3 px-4 border-b">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="text-sm text-gray-700">
+                @foreach ($equipments as $room)
+                    <tr class="hover:bg-gray-50">
+                        <td class="py-3 px-4 border-b">{{ $room->id }}</td>
+                        <td class="py-3 px-4 border-b">{{ $room->room_name }}</td>
+                        <td class="py-3 px-4 border-b">{{ $room->room_code }}</td>
+                        <td class="py-3 px-4 border-b">
+                            <div class="flex flex-col space-y-1">
+                                @foreach($room->equipment as $equipment)
+                                    <span class="bg-gray-100 rounded px-2 py-1 text-xs font-semibold text-gray-700">
+                                        {{ $equipment->equipment_name }} ({{ $equipment->quantity }})
+                                    </span>
+                                @endforeach
+                            </div>
+                        </td>
+                        <td class="py-3 px-4 border-b">
+                            <div class="flex space-x-2">
+                            @foreach ($room->equipment as $equipment)
+                        <!-- Edit Button -->
+                        <a href="{{ route('equipment.edit', $equipment->id) }}" 
+                        class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm transition-colors">
+                            Edit
+                        </a>
+                            @endforeach
+                                <!-- Delete Button -->
+                                <form action="{{ route('equipment.destroy', $room->id) }}" method="POST" 
+                                      onsubmit="return confirm('Are you sure you want to delete this room?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" 
+                                            class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm transition-colors">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 </div>
 @endsection
