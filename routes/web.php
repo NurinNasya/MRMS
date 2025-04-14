@@ -1,10 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MeetingRoomController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\EquipmentController;
 
 // Redirect root to login
@@ -52,4 +54,37 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/{equipment}', [EquipmentController::class, 'destroy'])->name('equipment.destroy');
     });
     
+// ----------------------------
+// Booking Routes for User
+// ----------------------------
+
+    // Show list of all rooms (for users to choose and book)
+    Route::get('/bookings', [BookingController::class, 'index'])->name('book.booking');
+
+    // Show booking form with available rooms
+    Route::get('/bookings/create', [BookingController::class, 'create'])->name('book.create');
+
+    // Show booking form for a specific room
+    Route::get('/bookings/room/{room_id}', [BookingController::class, 'bookRoomForm'])->name('book.room');
+
+    // Store booking (form submission)
+    Route::post('/bookings/store/{room_id}', [BookingController::class, 'store'])->name('book.store');
+
+    // View all bookings made by users
+    Route::get('/bookings/view', [BookingController::class, 'viewBookings'])->name('book.view');
+
+    // Edit a booking
+    Route::get('/bookings/{id}/edit', [BookingController::class, 'edit'])->name('book.edit');
+
+    // Update a booking
+    Route::put('/bookings/{id}/update', [BookingController::class, 'update'])->name('book.update');
+
+    // EquipmentController routes (hers)
+    Route::get('/equipment', [EquipmentController::class, 'index'])->name('equipment.index');
+    // Make the room parameter optional
+    Route::get('/equipment/create/{room?}', [EquipmentController::class, 'create'])->name('equipment.create');
+    Route::post('/equipment', [EquipmentController::class, 'store'])->name('equipment.store');
+    Route::get('/equipment/{id}/edit', [EquipmentController::class, 'edit'])->name('equipment.edit');
+    Route::put('/equipment/{id}', [EquipmentController::class, 'update'])->name('equipment.update');
+    Route::delete('/equipment/{id}', [EquipmentController::class, 'destroy'])->name('equipment.destroy');
 });

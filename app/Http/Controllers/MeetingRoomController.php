@@ -10,7 +10,7 @@ use App\Models\Equipment;
 
 class MeetingRoomController extends Controller
 {
-        public function index()
+    public function index()
     {
         return view('Meetingroom.roomdashboard');
     }
@@ -45,32 +45,32 @@ class MeetingRoomController extends Controller
     }
 
     public function update(Request $request, $id)
-{
-    // Validate the incoming data
-    $request->validate([
-        'room_name' => 'required|string|max:255',
-        'capacity' => 'required|integer',
-        'status' => 'required|string',
-        'room_code' => 'required|string|max:10',
-    ]);
+    {
+        // Validate the incoming data
+        $request->validate([
+            'room_name' => 'required|string|max:255',
+            'capacity' => 'required|integer',
+            'status' => 'required|string',
+            'room_code' => 'required|string|max:10',
+        ]);
 
-    // Find the room by ID and update the details
-    $room = MeetingRoom::findOrFail($id);
-    $room->update([
-        'room_name' => $request->room_name,
-        'capacity' => $request->capacity,
-        'status' => $request->status,
-        'room_code' => $request->room_code,
-    ]);
+        // Find the room by ID and update the details
+        $room = MeetingRoom::findOrFail($id);
+        $room->update([
+            'room_name' => $request->room_name,
+            'capacity' => $request->capacity,
+            'status' => $request->status,
+            'room_code' => $request->room_code,
+        ]);
 
-    // Redirect back to the dashboard or room view after updating
-    return redirect()->route('admin.dashboard')->with('success', 'Room updated successfully.');
-}
+        // Redirect back to the dashboard or room view after updating
+        return redirect()->route('admin.dashboard')->with('success', 'Room updated successfully.');
+    }
 
 
     public function view($id)
     {
-            // Fetch the meeting room by its ID from the database
+        // Fetch the meeting room by its ID from the database
         $room = MeetingRoom::findOrFail($id); // This will fetch the room from the database or return a 404 error if not found
 
         // Pass the room object to the view

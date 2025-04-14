@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class MeetingRoom extends Model
 {
     use HasFactory;
-
     protected $fillable = [
         'room_name',
         'capacity',
         'status',
         'room_code',
+
     ];
 
      // Define the relationship to Equipment
