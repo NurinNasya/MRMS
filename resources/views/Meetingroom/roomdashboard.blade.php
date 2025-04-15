@@ -24,14 +24,14 @@
                 </tr>
             </thead>
             <tbody class="text-sm text-gray-700">
-                {{-- @foreach ($rooms as $room) --}}
+                @foreach ($rooms as $room)
                     <tr class="hover:bg-gray-50">
-                        <td class="py-3 px-4 border-b">1 {{-- {{ $room->id }} --}}</td>
-                        <td class="py-3 px-4 border-b">Sunflower Room {{-- {{ $room->name }} --}}</td>
-                        <td class="py-3 px-4 border-b">RM101 {{-- {{ $room->code }} --}}</td>
-                        <td class="py-3 px-4 border-b">20 {{-- {{ $room->capacity }} --}}</td>
-                        <td class="py-3 px-4 border-b">10:00 AM {{-- {{ $room->start_time }} --}}</td>
-                        <td class="py-3 px-4 border-b">12:00 PM {{-- {{ $room->end_time }} --}}</td>
+                        <td class="py-3 px-4 border-b">{{ $room->id }}</td>
+                        <td class="py-3 px-4 border-b">{{ $room->room_name }}</td>
+                        <td class="py-3 px-4 border-b">{{ $room->room_code }}</td>
+                        <td class="py-3 px-4 border-b">{{ $room->capacity }}</td>
+                        <td class="py-3 px-4 border-b">{{ $room->start_time }}</td>
+                        <td class="py-3 px-4 border-b">{{ $room->end_time }}</td>
                         <td class="py-3 px-4 border-b text-center">
                             <div class="flex justify-center space-x-2">
                                 {{-- Approve button --}}
@@ -52,7 +52,7 @@
                             </div>
                         </td>
                     </tr>
-                {{-- @endforeach --}}
+                @endforeach
             </tbody>
         </table>
     </div>

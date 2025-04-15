@@ -12,7 +12,8 @@ class MeetingRoomController extends Controller
 {
     public function index()
     {
-        return view('Meetingroom.roomdashboard');
+        $rooms = MeetingRoom::all(); // or any relevant query
+        return view('Meetingroom.roomdashboard', compact('rooms'));
     }
 
     public function create()

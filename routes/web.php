@@ -42,7 +42,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/', [EquipmentController::class, 'index'])->name('equipment.index'); // Index route
         Route::get('/create', [EquipmentController::class, 'create'])->name('equipment.create'); // General create route
         Route::get('/create/room/{meetingRoom}', [EquipmentController::class, 'createWithRoom'])->name('equipment.create.with-room'); // Create route with room binding
-        Route::post('/', [EquipmentController::class, 'store'])->name('equipment.store'); // Store route (for adding equipment)
+        Route::post('/equipment', [EquipmentController::class, 'store'])->name('equipment.store');
         
         // Edit route for individual equipment
         Route::get('/{equipment}/edit', [EquipmentController::class, 'edit'])->name('equipment.edit');

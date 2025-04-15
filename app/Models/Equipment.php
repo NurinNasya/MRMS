@@ -10,12 +10,10 @@ class Equipment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
+        'equipment_name',
+        'quantity',
         'meeting_room_id',
-        'code',
-        'capacity',
-        'start_time',
-        'end_time',
+        'status',
     ];
 
     // 🔽 Add this method below to link equipment to the room

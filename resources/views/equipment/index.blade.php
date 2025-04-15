@@ -104,34 +104,35 @@
                         <td class="py-3 px-4 border-b">
                             <div class="flex flex-col space-y-1">
                                 @foreach($room->equipment as $equipment)
-                                    <span class="bg-gray-100 rounded px-2 py-1 text-xs font-semibold text-gray-700">
-                                        {{ $equipment->equipment_name }} ({{ $equipment->quantity }})
-                                    </span>
-                                @endforeach
-                            </div>
-                        </td>
-                        <td class="py-3 px-4 border-b">
-                            <div class="flex space-x-2">
-                            @foreach ($room->equipment as $equipment)
-                        <!-- Edit Button -->
-                        <a href="{{ route('equipment.edit', $equipment->id) }}" 
-                        class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm transition-colors">
-                            Edit
-                        </a>
+                                <span class="bg-gray-100 rounded px-2 py-1 text-xs font-semibold text-gray-700">
+                                    {{ $equipment->equipment_name }} ({{ $equipment->quantity }})
+                                </span>
                             @endforeach
-                                <!-- Delete Button -->
-                                <form action="{{ route('equipment.destroy', $room->id) }}" method="POST" 
-                                      onsubmit="return confirm('Are you sure you want to delete this room?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" 
-                                            class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm transition-colors">
-                                        Delete
-                                    </button>
-                                </form>
                             </div>
-                        </td>
-                    </tr>
+                            </td>
+
+                            <td class="py-3 px-4 border-b">
+                                <div class="flex space-x-2">
+                                    {{-- Show Edit Button only once (for the first equipment) --}}
+                                    @if ($room->equipment->isNotEmpty())
+                                        <a href="{{ route('equipment.edit', $room->equipment->first()->id) }}" 
+                                        class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm transition-colors">
+                                            Edit
+                                        </a>
+                                    @endif
+
+                            <!-- Delete Button (still using room ID, adjust if deleting equipment instead) -->
+                            <form action="{{ route('equipment.destroy', $room->id) }}" method="POST" 
+                                onsubmit="return confirm('Are you sure you want to delete this room?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" 
+                                        class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm transition-colors">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    </td>
                 @endforeach
             </tbody>
         </table>
