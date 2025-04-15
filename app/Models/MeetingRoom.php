@@ -21,4 +21,9 @@ class MeetingRoom extends Model
      {
          return $this->hasMany(Equipment::class, 'meeting_room_id'); // Use the correct foreign key ('meeting_room_id')
      }
+
+     public function bookings()
+     {
+         return $this->hasMany(Booking::class);
+     }
 }

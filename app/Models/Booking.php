@@ -10,12 +10,17 @@ class Booking extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        //'user_id',
         'meeting_room_id',
         'start_time',
         'end_time',
         'status',
         'participant',
-        'meeting_agenda ',
+        'meeting_agenda',
     ];
+
+    public function meetingRoom()
+    {
+        return $this->belongsTo(MeetingRoom::class);
+    }
 }

@@ -58,27 +58,23 @@ Route::middleware(['auth'])->group(function () {
 // Booking Routes for User
 // ----------------------------
 
+
     // Show list of all rooms (for users to choose and book)
     Route::get('/bookings', [BookingController::class, 'index'])->name('book.booking');
-
     // Show booking form with available rooms
-    Route::get('/bookings/create', [BookingController::class, 'create'])->name('book.create');
-
+    Route::get('/bookings/add', [BookingController::class, 'create'])->name('book.bookingadd');
     // Show booking form for a specific room
     Route::get('/bookings/room/{room_id}', [BookingController::class, 'bookRoomForm'])->name('book.room');
-
     // Store booking (form submission)
     Route::post('/bookings/store/{room_id}', [BookingController::class, 'store'])->name('book.store');
-
     // View all bookings made by users
     Route::get('/bookings/view', [BookingController::class, 'viewBookings'])->name('book.view');
-
     // Edit a booking
     Route::get('/bookings/{id}/edit', [BookingController::class, 'edit'])->name('book.edit');
-
     // Update a booking
     Route::put('/bookings/{id}/update', [BookingController::class, 'update'])->name('book.update');
 
+    
     // EquipmentController routes (hers)
     Route::get('/equipment', [EquipmentController::class, 'index'])->name('equipment.index');
     // Make the room parameter optional

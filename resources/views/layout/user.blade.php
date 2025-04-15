@@ -17,8 +17,8 @@
     <div class="sidebar fixed top-0 left-0 w-56 bg-green-700 text-white h-full p-5 transition-all duration-300">
         <h2 class="text-center text-white mb-6 text-xl">MRMS</h2>
 
-        <a href="#"
-            class="block py-3 px-4 text-lg hover:bg-green-600 {{ Request::routeIs('dashboard') ? 'bg-green-800' : '' }}">Dashboard</a>
+        <a href="{{ route('user.dashboard') }}"
+            class="block py-3 px-4 text-lg hover:bg-green-600 {{ Request::routeIs('user.dashboard') ? 'bg-green-800' : '' }}">Dashboard</a>
 
         <a href="{{ route('book.booking') }}"
             class="block py-3 px-4 text-lg hover:bg-green-600 {{ Request::routeIs('book.booking') ? 'bg-green-800' : '' }}">Booking</a>

@@ -10,45 +10,43 @@ class BookingController extends Controller
 {
     public function index()
     {
-        //$rooms = MeetingRoom::all(); // now using MeetingRoom
-        return view('book.booking');
+        $rooms = MeetingRoom::all(); // Or your query
+        return view('book.booking', compact('rooms'));
     }
 
-    public function create()
+    /*public function create()
     {
         return view('book.bookingadd');
-    }
-
+    }*/
+    
     public function bookRoomForm($room_id)
     {
-        //$room = MeetingRoom::findOrFail($room_id);
+        $room = MeetingRoom::findOrFail($room_id);
         return view('book.bookingadd', compact('room'));
     }
 
     public function store(Request $request, $room_id)
     {
         $validated = $request->validate([
-            'user_id' => 'required|numeric',
-            'room_id' => 'required|numeric',
+            //'meeting_room_id' => 'required|numeric',
             'start_time' => 'required|date',
             'end_time' => 'required|date|after:start_time',
-            'participants' => 'required|numeric',
-            'agenda' => 'required|string',
+            'participant' => 'required|numeric',
+            'meeting_agenda' => 'required|string',
         ]);
 
         Booking::create([
-            'user_id' => $validated['user_id'],
-            'room_id' => $validated['room_id'],
+            'meeting_room_id' => $room_id,
             'start_time' => $validated['start_time'],
             'end_time' => $validated['end_time'],
-            'participants' => $validated['participants'],
-            'agenda' => $validated['agenda'],
+            'participant' => $validated['participant'],
+            'meeting_agenda' => $validated['meeting_agenda'],
             'status' => 'Pending',
         ]);
 
-        MeetingRoom::where('id', $room_id)->update(['status' => 'Booked']);
+        MeetingRoom::where('id', $room_id)->update(['status' => 'Booked']); // Use meeting_room_id
 
-        return redirect()->route('book.index')->with('success', 'Booking successfully created.');
+        return redirect()->route('book.booking')->with('success', 'Booking successfully created.');
     }
 
     public function viewBookings()
@@ -69,8 +67,8 @@ class BookingController extends Controller
         $validated = $request->validate([
             'start_time' => 'required|date',
             'end_time' => 'required|date|after:start_time',
-            'participants' => 'required|numeric',
-            'agenda' => 'required|string',
+            'participant' => 'required|numeric',
+            'meeting_agenda' => 'required|string',
             'room_id' => 'required|numeric',
         ]);
 
