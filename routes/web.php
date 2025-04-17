@@ -36,6 +36,8 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/meetingroom/update/{id}', [MeetingRoomController::class, 'update'])->name('meetingroom.update');
     Route::get('/meetingroom/view/{id}', [MeetingRoomController::class, 'view'])->name('meetingroom.view');
     Route::delete('/meetingroom/delete/{id}', [MeetingRoomController::class, 'destroy'])->name('meetingroom.destroy');
+    Route::put('/meetingroom/approve/{id}', [MeetingRoomController::class, 'approveBooking'])->name('meetingroom.approve');
+    Route::put('/meetingroom/reject/{id}', [MeetingRoomController::class, 'rejectBooking'])->name('meetingroom.reject');
 
     //Equipment Routes
     Route::prefix('equipment')->group(function () {
@@ -61,21 +63,15 @@ Route::middleware(['auth'])->group(function () {
 // Booking Routes for User
 // ----------------------------
 
-
     // Show list of all rooms (for users to choose and book)
     Route::get('/bookings', [BookingController::class, 'index'])->name('book.booking');
-    // Show booking form with available rooms
-    Route::get('/bookings/add', [BookingController::class, 'create'])->name('book.bookingadd');
-    // Show booking form for a specific room
-    Route::get('/bookings/room/{room_id}', [BookingController::class, 'bookRoomForm'])->name('book.room');
-    // Store booking (form submission)
-    Route::post('/bookings/store/{room_id}', [BookingController::class, 'store'])->name('book.store');
-    // View all bookings made by users
-    Route::get('/bookings/view', [BookingController::class, 'viewBookings'])->name('book.view');
-    // Edit a booking
+    Route::get('/bookings/add', [BookingController::class, 'create'])->name('book.bookingadd'); // Show booking form with available rooms
+    Route::get('/bookings/room/{room_id}', [BookingController::class, 'bookRoomForm'])->name('book.room');    // Show booking form for a specific room
+    Route::post('book/{room_id}/store', [BookingController::class, 'store'])->name('book.store');
+    Route::get('/bookings/view/{id}', [BookingController::class, 'viewBookings'])->name('book.view');
     Route::get('/bookings/{id}/edit', [BookingController::class, 'edit'])->name('book.edit');
-    // Update a booking
     Route::put('/bookings/{id}/update', [BookingController::class, 'update'])->name('book.update');
+    Route::get('/mybookings', [BookingController::class, 'myBookings'])->name('mybookings');
 
     
     // EquipmentController routes (hers)

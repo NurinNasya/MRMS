@@ -5,15 +5,23 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\MeetingRoom;
-use App\Models\Equipment;
+use App\Models\Booking;
 
 
 class MeetingRoomController extends Controller
 {
     public function index()
     {
-        $rooms = MeetingRoom::all(); // or any relevant query
-        return view('Meetingroom.roomdashboard', compact('rooms'));
+         // Get all rooms
+         $rooms = MeetingRoom::all();
+
+         // Fetch all bookings that are Pending and filter by room if needed
+         $pendingBookings = Booking::where('status', 'Pending')->get();
+ 
+         return view('MeetingRoom.roomdashboard', compact('rooms', 'pendingBookings'));
+
+        //$rooms = MeetingRoom::all(); // or any relevant query
+        //return view('Meetingroom.roomdashboard', compact('rooms'));
     }
 
     public function create()
@@ -88,4 +96,23 @@ class MeetingRoomController extends Controller
         return redirect()->route('admin.dashboard')->with('success', 'Room deleted successfully');
     }
 
+     // Approve a booking (change status to Approved)
+     public function approveBooking($id)
+     {
+         $booking = Booking::findOrFail($id);
+         $booking->status = 'Approved';
+         $booking->save();
+ 
+         return redirect()->route('meetingroom.dashboard')->with('success', 'Booking approved successfully.');
+     }
+ 
+     // Reject a booking (change status to Rejected)
+     public function rejectBooking($id)
+     {
+         $booking = Booking::findOrFail($id);
+         $booking->status = 'Rejected';
+         $booking->save();
+ 
+         return redirect()->route('meetingroom.dashboard')->with('success', 'Booking rejected successfully.');
+     }
 }

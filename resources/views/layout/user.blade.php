@@ -23,6 +23,9 @@
         <a href="{{ route('book.booking') }}"
             class="block py-3 px-4 text-lg hover:bg-green-600 {{ Request::routeIs('book.booking') ? 'bg-green-800' : '' }}">Booking</a>
 
+        <a href="{{ route('mybookings') }}"
+            class="block py-3 px-4 text-lg hover:bg-green-600 {{ Request::routeIs('mybookings') ? 'bg-green-800' : '' }}">My Booking</a>
+
         <form action="{{ route('logout') }}" method="POST" class="mt-6">
             @csrf
             <button type="submit"
