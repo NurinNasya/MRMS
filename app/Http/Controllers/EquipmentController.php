@@ -2,166 +2,130 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Equipment;
 use App\Models\MeetingRoom;
-
-/*class EquipmentController extends Controller
-{
-    public function index(Request $request)
-    {
-        $roomsQuery = MeetingRoom::with('equipment');
-
-        if ($request->has('search') && $request->search != '') {
-            $searchTerm = $request->search;
-            $roomsQuery->where(function($q) use ($searchTerm) {
-                $q->where('name', 'LIKE', "%{$searchTerm}%")
-                  ->orWhere('code', 'LIKE', "%{$searchTerm}%")
-                  ->orWhere('capacity', 'LIKE', "%{$searchTerm}%")
-                  ->orWhereHas('equipment', function ($eq) use ($searchTerm) {
-                      $eq->where('equipment_name', 'LIKE', "%{$searchTerm}%");
-                  });
-            });
-        }
-
-        $equipments = $roomsQuery->orderBy('created_at', 'desc')->paginate(10);
-        return view('equipment.index', compact('equipments'));
-    }
-
-    public function create(Request $request)
-    {
-        $room = null;
-        
-        if ($request->has('meeting_room_id')) {
-            $room = MeetingRoom::find($request->input('meeting_room_id'));
-        }
-        
-        return view('equipment.create', [
-            'rooms' => MeetingRoom::all(),
-            'room' => $room
-        ]);
-    }
-
-    public function store(Request $request)
-    {
-        // Validate the input data
-        $request->validate([
-            'equipment_name' => 'required|string|max:255',
-            'quantity' => 'required|integer',
-            'meeting_room_id' => 'required|exists:meeting_rooms,id',
-        ]);
-
-        // Create the new equipment
-        $equipment = new Equipment();
-        $equipment->equipment_name = $request->equipment_name;
-        $equipment->quantity = $request->quantity;
-        $equipment->meeting_room_id = $request->meeting_room_id;
-        $equipment->save();
-
-        // Redirect with a success message
-        return redirect()->route('equipment.index')->with('success', 'Equipment added successfully!');
-    }
-
-    public function edit(Equipment $equipment)
-    {
-        return view('equipment.edit', [
-            'equipment' => $equipment,
-            'rooms' => MeetingRoom::all() // Make sure you pass the rooms to the view
-        ]);
-    }
-
-    public function update(Request $request, Equipment $equipment)
-    {
-        $validated = $request->validate([
-            'equipment_name' => 'required|string|max:255',
-            'quantity' => 'required|integer|min:1',
-            'meeting_room_id' => 'required|exists:meeting_rooms,id',
-            'status' => 'required|string|in:Available,In Use,Under Maintenance',
-        ]);
-
-        // Update equipment with the validated data
-        $equipment->update($validated);
-
-        return redirect()->route('equipment.index')
-            ->with('success', 'Equipment updated successfully!');
-    }
-
-    public function destroy(Equipment $equipment)
-    {
-        $equipment->delete();
-        return redirect()->route('equipment.index')
-            ->with('success', 'Equipment deleted successfully!');
-    }
-}*/
+use Illuminate\Http\Request;
 
 class EquipmentController extends Controller
 {
     public function index(Request $request)
     {
-        $roomsQuery = MeetingRoom::with('equipment');
+        $roomsQuery = MeetingRoom::query();
+        $equipmentRoomsQuery = MeetingRoom::with('equipment')->whereHas('equipment');
 
         if ($request->has('search') && $request->search != '') {
             $searchTerm = $request->search;
-            $roomsQuery->where(function($q) use ($searchTerm) {
+
+            $roomsQuery->where(function ($q) use ($searchTerm) {
                 $q->where('name', 'LIKE', "%{$searchTerm}%")
-                  ->orWhere('code', 'LIKE', "%{$searchTerm}%")
-                  ->orWhere('capacity', 'LIKE', "%{$searchTerm}%")
-                  ->orWhereHas('equipment', function ($eq) use ($searchTerm) {
-                      $eq->where('equipment_name', 'LIKE', "%{$searchTerm}%");
-                  });
+                    ->orWhere('code', 'LIKE', "%{$searchTerm}%")
+                    ->orWhere('capacity', 'LIKE', "%{$searchTerm}%");
+            });
+
+            $equipmentRoomsQuery->where(function ($q) use ($searchTerm) {
+                $q->where('name', 'LIKE', "%{$searchTerm}%")
+                    ->orWhere('code', 'LIKE', "%{$searchTerm}%")
+                    ->orWhere('capacity', 'LIKE', "%{$searchTerm}%")
+                    ->orWhereHas('equipment', function ($eq) use ($searchTerm) {
+                        $eq->where('equipment_name', 'LIKE', "%{$searchTerm}%");
+                    });
             });
         }
 
-        $equipments = $roomsQuery->orderBy('created_at', 'desc')->paginate(10);
-        return view('equipment.index', compact('equipments'));
+        $rooms = $roomsQuery->paginate(5, ['*'], 'rooms_page');
+        $equipments = $equipmentRoomsQuery->paginate(5, ['*'], 'equipment_page');
+
+        return view('equipment.index', compact('rooms', 'equipments'));
     }
 
-    public function create($room_id)
+    public function create($room_id = null)
     {
-        // Find the meeting room or fail if not found
-        $room = MeetingRoom::findOrFail($room_id);
-    
-        // Pass the $meetingRoom variable to the view
+        $room = $room_id ? MeetingRoom::findOrFail($room_id) : null;
         return view('equipment.create', compact('room'));
     }
-    
+
     public function store(Request $request)
     {
-        // Validate the request
-        $request->validate([
+        $validated = $request->validate([
             'meeting_room_id' => 'required|exists:meeting_rooms,id',
             'equipment_name' => 'required|string',
             'quantity' => 'required|integer|min:1',
             'status' => 'required|string',
         ]);
 
-        // Create the equipment
-        Equipment::create($request->all());
+        Equipment::create($validated);
 
-        return redirect()->back()->with('success', 'Equipment added successfully!');
+        return redirect()->route('equipment.index')->with('success', 'Equipment added successfully!');
     }
 
-    public function update(Request $request, Equipment $equipment)
+    public function edit(Equipment $equipment)
     {
-        // Validate the request
-        $request->validate([
-            'meeting_room_id' => 'required|exists:meeting_rooms,id',
-            'equipment_name' => 'required|string',
-            'quantity' => 'required|integer|min:1',
-            'status' => 'required|string',
-        ]);
+        $room = MeetingRoom::findOrFail($equipment->meeting_room_id);
+        return view('equipment.edit', compact('equipment', 'room'));
+    }
 
-        // Update the equipment
-        $equipment->update($request->all());
+    public function update(Request $request, $id)
+    {
+        if (isset($request->equipments)) {
+            foreach ($request->equipments as $equipmentData) {
+                $equipment = Equipment::find($equipmentData['id']);
+                $equipment->quantity = $equipmentData['quantity'];
+                $equipment->status = $equipmentData['status'];
+                $equipment->save();
+            }
 
-        return redirect()->back()->with('success', 'Equipment updated successfully!');
+            return redirect()->route('equipment.index')->with('success', 'Equipment updated successfully!');
+        } else {
+            $equipment = Equipment::find($id);
+            $equipment->equipment_name = $request->equipment_name;
+            $equipment->quantity = $request->quantity;
+            $equipment->status = $request->status;
+            $equipment->save();
+
+            return redirect()->route('equipment.index')->with('success', 'Equipment updated successfully!');
+        }
     }
 
     public function destroy(Equipment $equipment)
     {
-        // Delete the equipment
         $equipment->delete();
 
         return redirect()->back()->with('success', 'Equipment deleted successfully!');
+    }
+
+    // Bulk edit
+    public function editMultiple($roomId)
+    {
+        $room = MeetingRoom::with('equipment')->findOrFail($roomId);
+        $equipments = $room->equipment;
+        $isBulk = true;
+
+        return view('equipment.edit', compact('room', 'equipments', 'isBulk'));
+    }
+
+    // Bulk update
+    public function updateMultiple(Request $request)
+    {
+        $equipmentUpdates = $request->input('equipments');
+
+        if (!is_array($equipmentUpdates)) {
+            return redirect()->back()->with('error', 'No equipment data received.');
+        }
+
+        foreach ($equipmentUpdates as $equipmentData) {
+            if (!isset($equipmentData['id'])) {
+                continue;
+            }
+
+            $equipment = Equipment::find($equipmentData['id']);
+            if ($equipment) {
+                $equipment->update([
+                    'quantity' => (int) $equipmentData['quantity'],
+                    'status' => (string) $equipmentData['status'],
+                ]);
+            }
+        }
+
+        return redirect()->route('equipment.index')->with('success', 'Equipments updated successfully.');
     }
 }

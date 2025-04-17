@@ -37,23 +37,26 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/meetingroom/view/{id}', [MeetingRoomController::class, 'view'])->name('meetingroom.view');
     Route::delete('/meetingroom/delete/{id}', [MeetingRoomController::class, 'destroy'])->name('meetingroom.destroy');
 
-    // Equipment routes
+    //Equipment Routes
     Route::prefix('equipment')->group(function () {
-        Route::get('/', [EquipmentController::class, 'index'])->name('equipment.index'); // Index route
-        Route::get('/create', [EquipmentController::class, 'create'])->name('equipment.create'); // General create route
-        Route::get('/create/room/{meetingRoom}', [EquipmentController::class, 'createWithRoom'])->name('equipment.create.with-room'); // Create route with room binding
-        Route::post('/equipment', [EquipmentController::class, 'store'])->name('equipment.store');
-        
-        // Edit route for individual equipment
-        Route::get('/{equipment}/edit', [EquipmentController::class, 'edit'])->name('equipment.edit');
-        
-        // Update route for the equipment (ensure PUT method)
-        Route::put('/{equipment}', [EquipmentController::class, 'update'])->name('equipment.update');
-        
-        // Delete route for equipment
-        Route::delete('/{equipment}', [EquipmentController::class, 'destroy'])->name('equipment.destroy');
-    });
+        Route::get('/', [EquipmentController::class, 'index'])->name('equipment.index');
     
+        // Route to view the form for creating new equipment, with optional room_id
+        Route::get('/create/{room_id?}', [EquipmentController::class, 'create'])->name('equipment.create');
+    
+        // Route to handle the form submission for storing equipment
+        Route::post('/', [EquipmentController::class, 'store'])->name('equipment.store');
+    
+        // Edit, update, and delete routes
+        Route::get('/{equipment}/edit', [EquipmentController::class, 'edit'])->name('equipment.edit');
+        Route::put('/{equipment}', [EquipmentController::class, 'update'])->name('equipment.update');
+        Route::delete('/{equipment}', [EquipmentController::class, 'destroy'])->name('equipment.destroy');
+    
+        // Bulk update routes
+        Route::get('/edit-multiple/{room}', [EquipmentController::class, 'editMultiple'])->name('equipment.edit.multiple');
+        Route::put('/update-multiple/{room}', [EquipmentController::class, 'updateMultiple'])->name('equipment.update.multiple');
+    });    
+
 // ----------------------------
 // Booking Routes for User
 // ----------------------------
@@ -76,11 +79,11 @@ Route::middleware(['auth'])->group(function () {
 
     
     // EquipmentController routes (hers)
-    Route::get('/equipment', [EquipmentController::class, 'index'])->name('equipment.index');
+    //Route::get('/equipment', [EquipmentController::class, 'index'])->name('equipment.index');
     // Make the room parameter optional
-    Route::get('/equipment/create/{room?}', [EquipmentController::class, 'create'])->name('equipment.create');
-    Route::post('/equipment', [EquipmentController::class, 'store'])->name('equipment.store');
-    Route::get('/equipment/{id}/edit', [EquipmentController::class, 'edit'])->name('equipment.edit');
-    Route::put('/equipment/{id}', [EquipmentController::class, 'update'])->name('equipment.update');
-    Route::delete('/equipment/{id}', [EquipmentController::class, 'destroy'])->name('equipment.destroy');
+    //Route::get('/equipment/create/{room?}', [EquipmentController::class, 'create'])->name('equipment.create');
+    //Route::post('/equipment', [EquipmentController::class, 'store'])->name('equipment.store');
+    //Route::get('/equipment/{id}/edit', [EquipmentController::class, 'edit'])->name('equipment.edit');
+    //Route::put('/equipment/{id}', [EquipmentController::class, 'update'])->name('equipment.update');
+    //Route::delete('/equipment/{id}', [EquipmentController::class, 'destroy'])->name('equipment.destroy');
 });
