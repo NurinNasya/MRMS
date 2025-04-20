@@ -2,17 +2,17 @@
 
 @section('content')
 <div class="p-6">
-    <h2 class="text-2xl font-semibold text-blue-700 mb-4 text-center">My Bookings</h2>
+        <h2 class="text-2xl font-semibold text-green-700 mb-4 text-center">My Bookings</h2>
 
     @if($bookings->isEmpty())
         <p class="text-center text-lg text-gray-500">You have no bookings yet.</p>
     @else
-        <div class="overflow-x-auto">
+    <div class="overflow-x-auto">
             <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow">
-                <thead class="bg-blue-100 text-gray-700 text-left text-sm">
+                <thead class="bg-gradient-to-r from-green-500 to-green-700 text-white text-left text-sm">
                     <tr>
                         <th class="py-3 px-4 border-b">Booking ID</th>
-                        <th class="py-3 px-4 border-b">Meeting Room</th>
+                        <th class="py-3 px-4 border-b">Room Name</th>
                         <th class="py-3 px-4 border-b">Start Slot</th>
                         <th class="py-3 px-4 border-b">End Slot</th>
                         <th class="py-3 px-4 border-b">Status</th>

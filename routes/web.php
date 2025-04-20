@@ -72,6 +72,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/bookings/{id}/edit', [BookingController::class, 'edit'])->name('book.edit');
     Route::put('/bookings/{id}/update', [BookingController::class, 'update'])->name('book.update');
     Route::get('/mybookings', [BookingController::class, 'myBookings'])->name('mybookings');
+    Route::delete('/bookings/{id}/cancel', [BookingController::class, 'cancel'])->name('book.cancel');
+
+
 
     
     // EquipmentController routes (hers)
