@@ -23,4 +23,9 @@ class Booking extends Model
     {
         return $this->belongsTo(MeetingRoom::class);
     }
+
+    public function equipment()
+    {
+        return $this->hasMany(Equipment::class); // Or use belongsTo if only one equipment per booking
+    }
 }

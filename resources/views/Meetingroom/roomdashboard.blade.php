@@ -91,25 +91,20 @@
                         <th class="py-3 px-4 border-b">End Time</th>
                         <th class="py-3 px-4 border-b">Participants</th>
                         <th class="py-3 px-4 border-b">Agenda</th>
-                        <th class="py-3 px-4 border-b">Status</th>
                         <th class="py-3 px-4 border-b text-center">Approval</th>
                 </tr>
             </thead>
             <tbody class="text-sm text-gray-700">
-                {{-- @foreach ($approvedRooms as $room) --}}
-                    <tr class="hover:bg-gray-50">
-                        {{--<td class="py-3 px-4 border-b">1</td>--}}
-                        {{--<td class="py-3 px-4 border-b">Sunflower Room</td>--}}
-                        {{--<td class="py-3 px-4 border-b">20</td>--}}
-                        {{--<td class="py-3 px-4 border-b">10:00 AM</td>--}}
-                        {{--<td class="py-3 px-4 border-b">12:00 PM</td>--}}
-                        <td class="py-3 px-4 border-b text-center">
-                            {{--<span class="inline-block px-3 py-1 rounded-full bg-green-100 text-green-700 font-medium">Approved</span>--}}
-                            {{-- or --}}
-                            {{-- <span class="inline-block px-3 py-1 rounded-full bg-red-100 text-red-700 font-medium">Rejected</span> --}}
-                        </td>
-                    </tr>
-                {{-- @endforeach --}}
+            @foreach($processedBookings as $booking)
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-3 px-4 border-b">{{ $booking->meetingRoom->id }}</td>
+                            <td class="py-3 px-4 border-b">{{ $booking->meetingRoom->room_name }}</td>
+                            <td class="py-3 px-4 border-b">{{ $booking->start_time }}</td>
+                            <td class="py-3 px-4 border-b">{{ $booking->end_time }}</td>
+                            <td class="py-3 px-4 border-b">{{ $booking->participant }}</td>
+                            <td class="py-3 px-4 border-b">{{ $booking->meeting_agenda }}</td>
+                            <td class="py-3 px-4 border-b">{{ $booking->status }}</td>
+                @endforeach
             </tbody>
         </table>
     </div>

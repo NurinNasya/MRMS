@@ -12,13 +12,25 @@ class MeetingRoomController extends Controller
 {
     public function index()
     {
+            // Get all rooms
+        $rooms = MeetingRoom::all();
+
+        // Get all bookings with status 'Pending'
+        $pendingBookings = Booking::where('status', 'Pending')->with('meetingRoom')->get();
+
+        // Get bookings that are already approved or rejected
+        $processedBookings = Booking::whereIn('status', ['Approved', 'Rejected'])->with('meetingRoom')->get();
+
+        // Pass all data to the view
+        return view('MeetingRoom.roomdashboard', compact('rooms', 'pendingBookings', 'processedBookings'));
+
          // Get all rooms
-         $rooms = MeetingRoom::all();
+        /* $rooms = MeetingRoom::all();
 
          // Fetch all bookings that are Pending and filter by room if needed
          $pendingBookings = Booking::where('status', 'Pending')->get();
  
-         return view('MeetingRoom.roomdashboard', compact('rooms', 'pendingBookings'));
+         return view('MeetingRoom.roomdashboard', compact('rooms', 'pendingBookings'));*/
 
         //$rooms = MeetingRoom::all(); // or any relevant query
         //return view('Meetingroom.roomdashboard', compact('rooms'));

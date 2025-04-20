@@ -75,8 +75,12 @@ class BookingController extends Controller
 
     public function viewBookings($id)
     {
-        $booking = Booking::findOrFail($id);  // Find booking or fail
+
+        $booking = Booking::with('equipment')->findOrFail($id);  // Eager load the equipment relationship
         return view('book.bookingview', compact('booking'));
+
+        /*$booking = Booking::findOrFail($id);  // Find booking or fail
+        return view('book.bookingview', compact('booking'));*/
     }
 
     public function edit($id)
@@ -110,6 +114,24 @@ class BookingController extends Controller
         // Use the correct view path
         return view('book.myBookings', compact('bookings'));
     }
+
+    public function cancel($id)
+    {
+
+        // Find and delete the booking
+        $booking = Booking::findOrFail($id);
+        $booking->delete();
+
+        // Redirect to the 'myBookings' view after deleting the booking
+        return redirect()->route('mybookings')->with('success', 'Booking deleted successfully.');
+
+        /*$booking = Booking::findOrFail($id);
+        $booking->status = "Cancelled";
+        $booking->save();
+
+        return redirect()->route('book.booking')->with('success', 'Booking canceled successfully.');*/
+    }
+
     
 
 }
