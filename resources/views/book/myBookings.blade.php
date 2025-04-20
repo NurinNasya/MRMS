@@ -27,7 +27,12 @@
                             <td class="py-3 px-4 border-b">{{ $booking->start_time }}</td>
                             <td class="py-3 px-4 border-b">{{ $booking->end_time }}</td>
                             <td class="py-3 px-4 border-b">
-                                <span class="px-3 py-1 rounded-full text-white {{ $booking->status == 'Pending' ? 'bg-yellow-400' : 'bg-green-500' }}">
+                                <span class="px-3 py-1 rounded-full text-white 
+                                    @if ($booking->status == 'Pending') bg-yellow-400 
+                                    @elseif ($booking->status == 'Approved') bg-green-500 
+                                    @elseif ($booking->status == 'Rejected') bg-red-500 
+                                    @else bg-gray-400 
+                                    @endif">
                                     {{ $booking->status }}
                                 </span>
                             </td>
