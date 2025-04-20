@@ -13,13 +13,21 @@
                 <div class="mb-4">
                     <label for="room_name" class="block text-sm font-medium text-gray-700 mb-1">Room Name</label>
                     <input type="text" id="room_name" name="room_name" placeholder="Room Name"
-                        class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" />
+                        class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        value="{{ old('room_name') }}" />
+                    @error('room_name')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div class="mb-4">
                     <label for="capacity" class="block text-sm font-medium text-gray-700 mb-1">Capacity</label>
                     <input type="number" id="capacity" name="capacity" placeholder="Capacity"
-                        class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" />
+                        class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        value="{{ old('capacity') }}" />
+                    @error('capacity')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div class="mb-4">
@@ -30,12 +38,19 @@
                         <option value="Booked">Booked</option>
                         <option value="In Use">In Use</option>
                     </select>
+                    @error('status')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div class="mb-4">
                     <label for="room_code" class="block text-sm font-medium text-gray-700 mb-1">Room Code</label>
                     <input type="text" id="room_code" name="room_code" placeholder="Room Code"
-                        class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" />
+                        class="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        value="{{ old('room_code') }}" />
+                    @error('room_code')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div>
