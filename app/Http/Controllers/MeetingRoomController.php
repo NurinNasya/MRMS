@@ -2,38 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\MeetingRoom;
 use App\Models\Booking;
-
 
 class MeetingRoomController extends Controller
 {
     public function index()
     {
-            // Get all rooms
         $rooms = MeetingRoom::all();
-
-        // Get all bookings with status 'Pending'
         $pendingBookings = Booking::where('status', 'Pending')->with('meetingRoom')->get();
-
-        // Get bookings that are already approved or rejected
         $processedBookings = Booking::whereIn('status', ['Approved', 'Rejected'])->with('meetingRoom')->get();
 
-        // Pass all data to the view
         return view('MeetingRoom.roomdashboard', compact('rooms', 'pendingBookings', 'processedBookings'));
-
-         // Get all rooms
-        /* $rooms = MeetingRoom::all();
-
-         // Fetch all bookings that are Pending and filter by room if needed
-         $pendingBookings = Booking::where('status', 'Pending')->get();
- 
-         return view('MeetingRoom.roomdashboard', compact('rooms', 'pendingBookings'));*/
-
-        //$rooms = MeetingRoom::all(); // or any relevant query
-        //return view('Meetingroom.roomdashboard', compact('rooms'));
     }
 
     public function create()
@@ -44,10 +25,10 @@ class MeetingRoomController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'room_name' => 'required|string|max:255',
+            'room_name' => 'required|string|max:255|unique:meeting_rooms,room_name',
             'capacity' => 'required|integer|min:1',
             'status' => 'required|in:Available,Booked,In Use',
-            'room_code' => 'required|string|max:255',
+            'room_code' => 'required|string|max:255|unique:meeting_rooms,room_code',
         ]);
 
         MeetingRoom::create($validated);
@@ -55,28 +36,23 @@ class MeetingRoomController extends Controller
         return redirect()->route('admin.dashboard')->with('success', 'Meeting room added successfully.');
     }
 
-
     public function edit($id)
     {
-        // Fetch the room data by its ID
         $room = MeetingRoom::findOrFail($id);
-
-        // Return the edit view with the room data
         return view('meetingroom.edit', compact('room'));
     }
 
     public function update(Request $request, $id)
     {
-        // Validate the incoming data
+        $room = MeetingRoom::findOrFail($id);
+
         $request->validate([
-            'room_name' => 'required|string|max:255',
+            'room_name' => 'required|string|max:255|unique:meeting_rooms,room_name,' . $room->id,
             'capacity' => 'required|integer',
             'status' => 'required|string',
-            'room_code' => 'required|string|max:10',
+            'room_code' => 'required|string|max:255|unique:meeting_rooms,room_code,' . $room->id,
         ]);
 
-        // Find the room by ID and update the details
-        $room = MeetingRoom::findOrFail($id);
         $room->update([
             'room_name' => $request->room_name,
             'capacity' => $request->capacity,
@@ -84,47 +60,38 @@ class MeetingRoomController extends Controller
             'room_code' => $request->room_code,
         ]);
 
-        // Redirect back to the dashboard or room view after updating
         return redirect()->route('admin.dashboard')->with('success', 'Room updated successfully.');
     }
 
-
     public function view($id)
     {
-        // Fetch the meeting room by its ID from the database
-        $room = MeetingRoom::findOrFail($id); // This will fetch the room from the database or return a 404 error if not found
-
-        // Pass the room object to the view
+        $room = MeetingRoom::findOrFail($id);
         return view('meetingroom.view', compact('room'));
     }
 
     public function destroy($id)
     {
-        // Find the room by ID and delete it
         $room = MeetingRoom::findOrFail($id);
         $room->delete();
 
-        // Redirect back to the admin dashboard or meeting room listing
         return redirect()->route('admin.dashboard')->with('success', 'Room deleted successfully');
     }
 
-     // Approve a booking (change status to Approved)
-     public function approveBooking($id)
-     {
-         $booking = Booking::findOrFail($id);
-         $booking->status = 'Approved';
-         $booking->save();
- 
-         return redirect()->route('meetingroom.dashboard')->with('success', 'Booking approved successfully.');
-     }
- 
-     // Reject a booking (change status to Rejected)
-     public function rejectBooking($id)
-     {
-         $booking = Booking::findOrFail($id);
-         $booking->status = 'Rejected';
-         $booking->save();
- 
-         return redirect()->route('meetingroom.dashboard')->with('success', 'Booking rejected successfully.');
-     }
+    public function approveBooking($id)
+    {
+        $booking = Booking::findOrFail($id);
+        $booking->status = 'Approved';
+        $booking->save();
+
+        return redirect()->route('meetingroom.dashboard')->with('success', 'Booking approved successfully.');
+    }
+
+    public function rejectBooking($id)
+    {
+        $booking = Booking::findOrFail($id);
+        $booking->status = 'Rejected';
+        $booking->save();
+
+        return redirect()->route('meetingroom.dashboard')->with('success', 'Booking rejected successfully.');
+    }
 }

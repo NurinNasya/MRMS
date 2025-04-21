@@ -38,18 +38,10 @@
         </div>
 
         <div class="mb-4">
-            <label for="participant" class="block text-sm font-medium text-gray-700 mb-1">
-                Participants (Max: {{ $room->capacity }})
-            </label>
-            <input type="number" name="participant"
-                   value="{{ old('participant') }}"
+            <label for="participant" class="block text-sm font-medium text-gray-700 mb-1">Participant</label>
+            <input type="text" name="participant" value="{{ old('participant') }}"
                    class="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                   placeholder="Enter number of participants"
-                   min="1" max="{{ $room->capacity }}" required>
-
-            @if ($errors->has('participant'))
-                <p class="text-red-600 text-sm mt-1">{{ $errors->first('participant') }}</p>
-            @endif
+                   placeholder="Enter number of participants" required>
         </div>
 
         <div class="mb-4">
